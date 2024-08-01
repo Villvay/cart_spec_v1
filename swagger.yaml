@@ -5,12 +5,11 @@ info:
   description: "A simple API for managing a shopping cart with only the happy path documented.  You can find out more about it at\
     \ Swagger at [https://dummyjson.com/docs/carts](https://dummyjson.com/docs/carts)"
 tags:
-  name: "Shopping Cart API"
-    description: "Shopping Cart CRUD"
-  externalDocs:
-    description: "Find out more"
-    url: "https://dummyjson.com/docs/carts"
-
+  - name: carts
+    description: Operations related to shopping carts
+    externalDocs:
+      description: DummyJSON Carts Documentation
+      url: https://dummyjson.com/docs/carts
 servers:
   - url: https://dummyjson.com
     description: DummyJSON server
