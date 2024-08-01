@@ -5,18 +5,52 @@ info:
   description: "A simple API for managing a shopping cart with only the happy path documented.  You can find out more about it at\
     \ Swagger at [https://dummyjson.com/docs/carts](https://dummyjson.com/docs/carts)"
 tags:
-- name: "Shopping Cart API"
-  description: "Shopping Cart CRUD"
+  name: "Shopping Cart API"
+    description: "Shopping Cart CRUD"
   externalDocs:
     description: "Find out more"
     url: "https://dummyjson.com/docs/carts"
+
 servers:
-    - url: https://dummyjson.com/  
-    
+  - url: https://dummyjson.com
+    description: DummyJSON server
+
 paths:
-  /cart:
+  /carts:
     get:
-      summary: Get the current cart
+      summary: Get all carts
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartList'
+    post:
+      summary: Add a new cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartInput'
+      responses:
+        '200':
+          description: Cart added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+
+  /carts/{id}:
+    get:
+      summary: Get a single cart by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: Successful response
@@ -24,21 +58,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Cart'
-    post:
-      summary: Create a new cart
-      responses:
-        '201':
-          description: Cart created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Cart'
-
-  /cart/{cartId}:
     put:
-      summary: Update the cart
+      summary: Update a cart
+      description: |
+        Update a cart. If 'merge' is set to true, new items will be added to the cart
+        and existing items will have their quantities updated. If 'merge' is false or not provided,
+        the cart will be completely replaced with the new data.
       parameters:
-        - name: cartId
+        - name: id
           in: path
           required: true
           schema:
@@ -48,7 +75,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Cart'
+              $ref: '#/components/schemas/CartUpdateInput'
       responses:
         '200':
           description: Cart updated successfully
@@ -57,29 +84,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/Cart'
     delete:
-      summary: Delete a specific cart
+      summary: Delete a cart
       parameters:
-        - name: cartId
+        - name: id
           in: path
           required: true
           schema:
             type: integer
       responses:
-        '204':
-          description: Cart deleted successfully
-
-  /cart/add:
-    post:
-      summary: Add a product to the cart
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Product'
-      responses:
         '200':
-          description: Product added successfully
+          description: Cart deleted successfully
           content:
             application/json:
               schema:
@@ -87,6 +101,48 @@ paths:
 
 components:
   schemas:
+    ProductInput:
+      type: object
+      required:
+        - id
+        - quantity
+      properties:
+        id:
+          type: integer
+          description: The ID of the product to add to the cart
+        quantity:
+          type: integer
+          description: The quantity of the product to add
+
+    CartInput:
+      type: object
+      required:
+        - userId
+        - products
+      properties:
+        userId:
+          type: integer
+          description: The ID of the user who owns this cart
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductInput'
+          description: An array of products to add to the cart
+
+    CartUpdateInput:
+      type: object
+      required:
+        - products
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductInput'
+          description: An array of products to update in the cart
+        merge:
+          type: boolean
+          description: If true, merge new items into the existing cart. If false or not provided, replace the entire cart.
+
     Product:
       type: object
       properties:
@@ -105,21 +161,12 @@ components:
         discountPercentage:
           type: number
           format: float
-        discountedTotal:
+        discountedPrice:
           type: number
           format: float
         thumbnail:
           type: string
           format: uri
-      required:
-        - id
-        - title
-        - price
-        - quantity
-        - total
-        - discountPercentage
-        - discountedTotal
-        - thumbnail
 
     Cart:
       type: object
@@ -142,11 +189,17 @@ components:
           type: integer
         totalQuantity:
           type: integer
-      required:
-        - id
-        - products
-        - total
-        - discountedTotal
-        - userId
-        - totalProducts
-        - totalQuantity
+
+    CartList:
+      type: object
+      properties:
+        carts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cart'
+        total:
+          type: integer
+        skip:
+          type: integer
+        limit:
+          type: integer
