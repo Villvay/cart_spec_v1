@@ -3,7 +3,7 @@ info:
   title: Shopping Cart API
   version: 1.0.0
   description: "A simple API for managing a shopping cart with only the happy path documented\
-               \For more infomration use [Carts Json](https://dummyjson.com/docs/carts)"
+               \ For more infomration use [Carts Json](https://dummyjson.com/docs/carts)"
 
 servers:
     - url: https://dummyjson.com/  
