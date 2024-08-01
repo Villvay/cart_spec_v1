@@ -2,9 +2,14 @@ openapi: 3.0.0
 info:
   title: Shopping Cart API
   version: 1.0.0
-  description: "A simple API for managing a shopping cart with only the happy path documented\
-               \ For more infomration use [Carts Json](https://dummyjson.com/docs/carts)"
+  description: A simple API for managing a shopping cart with only the happy path documented
 
+tags:
+- name: "Shopping Cart API"
+  description: "Shopping Cart CRUD"
+  externalDocs:
+    description: "Find out more"
+    url: "https://dummyjson.com/docs/carts"
 servers:
     - url: https://dummyjson.com/  
     
